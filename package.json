@@ -1,0 +1,14 @@
+{
+  "name": "node-bt",
+  "version": "0.0.0",
+  "description": "Node interface with bluetooth for ESP32",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@abandonware/noble": "^1.9.2-24"
+  }
+}
