@@ -1,15 +1,32 @@
 const noble = require('@abandonware/noble');
 
-noble.startScanning([], true);
+noble.startScanning(['4fafc201-1fb5-459e-8fcc-c5c9c331914b'], true);
 
 noble.on('discover', async (peripheral) => {
-  // await noble.stopScanningAsync();
-  //await peripheral.connectAsync();
-  // const {characteristics} = await peripheral.discoverSomeServicesAndCharacteristicsAsync(['180f'], ['2a19']);
-  // const batteryLevel = (await characteristics[0].readAsync())[0];
-
-  console.log(peripheral);
-
-  // await peripheral.disconnectAsync();
-  // process.exit(0);
+  try {
+    await noble.stopScanningAsync();
+    await peripheral.connectAsync();
+    const { characteristics } = await peripheral.discoverAllServicesAndCharacteristicsAsync(['4fafc2011fb5459e8fccc5c9c331914b'], ['beb5483e36e14688b7f5ea07361b26a8']);
+    const imuCharacteristic = characteristics[0];
+    await subscribeToCharacteristic(imuCharacteristic);
+  } catch (e) {
+    console.error(e);
+  }
 });
+
+async function subscribeToCharacteristic(characteristic) {
+  return new Promise((resolve, reject) => {
+    characteristic.subscribe(error => {
+      if (error) {
+        reject(error);
+      } else {
+        console.log('Subscribed to notifications.');
+        characteristic.on('data', (data, isNotification) => {
+          console.log('Received data:', data.toString());
+          // Handle the received data
+        });
+        resolve();
+      }
+    });
+  });
+}
